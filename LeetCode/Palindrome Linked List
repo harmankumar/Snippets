@@ -1,0 +1,50 @@
+Given a singly linked list, determine if it is a palindrome.
+
+Follow up:
+Could you do it in O(n) time and O(1) space?
+
+######### SOLUTION 1 ##########
+
+#### O(n) time , O(n) space ... Using stack ####
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        stack<int> mystack;
+        ListNode* head1 = head;
+        while(head1 != NULL)
+        {
+            mystack.push(head1->val);
+            head1 = head1->next;
+        }
+        head1 = head;
+        while(head1 !=  NULL)
+        {
+            if(head1->val != mystack.top())
+            {
+                return 0;
+            }
+            else
+            {
+                head1 = head1->next;
+                mystack.pop();
+            }
+        }
+        return 1;
+        
+    }
+};
+
+#############################################
+
+###### SOLUTION 2 #########
+
+###### O(n)  time , O(1) space ... by reversing second half of the list ####

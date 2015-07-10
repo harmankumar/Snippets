@@ -1,0 +1,201 @@
+Implement the following operations of a stack using queues.
+
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+empty() -- Return whether the stack is empty.
+Notes:
+You must use only standard operations of a queue -- which means only push to back, peek/pop from front, size, and is empty operations are valid.
+Depending on your language, queue may not be supported natively. You may simulate a queue by using a list or deque (double-ended queue), as long as you use only standard operations of a queue.
+You may assume that all operations are valid (for example, no pop or top operations will be called on an empty stack).
+
+
+########### SOLUTION1  Make the pop() and front() operations costly #############
+
+	In push operation, the new element is always enqueued to q1. In pop() operation, if q2 is empty then all the elements except the last, are moved to q2. Finally the last element is dequeued from q1 and returned.
+
+	push(s,  x)
+	  1) Enqueue x to q1 (assuming size of q1 is unlimited).
+
+	pop(s)  
+	  1) One by one dequeue everything except the last element from q1 and enqueue to q2.
+	  2) Dequeue the last item of q1, the dequeued item is result, store it.
+	  3) Swap the names of q1 and q2
+	  4) Return the item stored in step 2.
+	// Swapping of names is done to avoid one more movement of all elements 
+	// from q2 to q1.
+
+class Stack {
+public:
+    queue<int> q1;
+    queue<int> q2;
+    // Push element x onto stack.
+    void push(int x) {
+        if(q2.empty())
+        {
+            q1.push(x);
+        }
+        else
+        {
+            q2.push(x);
+        }
+    }
+
+    // Removes the element on top of the stack.
+    void pop() {
+        if(q2.empty())
+        {
+            int temp;
+            while(1)
+            {
+                temp = q1.front();
+                q1.pop();
+                if(q1.empty())
+                {
+                    return;
+                }
+                else
+                {
+                    q2.push(temp);
+                }
+            }
+        }
+        
+        else
+        {
+            int temp;
+            while(1)
+            {
+                temp = q2.front();
+                q2.pop();
+                if(q2.empty())
+                {
+                    return;
+                }
+                else
+                {
+                    q1.push(temp);
+                }
+            }
+        }        
+    }
+
+    // Get the top element.
+    int top() {
+        if(q2.empty())
+        {
+            int finval,temp;
+            while(1)
+            {
+                temp = q1.front();
+                q1.pop();
+                if(q1.empty())
+                {
+                    finval = temp;
+                    q2.push(temp);
+                    break;
+                }
+                q2.push(temp);
+            }
+            return finval;
+        }
+        
+        else
+        {
+            int finval,temp;
+            while(1)
+            {
+                temp = q2.front();
+                q2.pop();
+                if(q2.empty())
+                {
+                    finval = temp;
+                    q1.push(temp);
+                    break;
+                }
+                q1.push(temp);
+            }
+            return finval;
+        }
+    }
+
+    // Return whether the stack is empty.
+    bool empty() {
+        return (q1.empty() && q2.empty());
+    }
+};
+
+
+
+#### SOLUTION2 make the push() operation costly ####
+	
+	This method makes sure that newly entered element is always at the front of ‘q1′, so that pop operation just dequeues from ‘q1′. ‘q2′ is used to put every new element at front of ‘q1′.
+
+	push(s, x) // x is the element to be pushed and s is stack
+	  1) Enqueue x to q2
+	  2) One by one dequeue everything from q1 and enqueue to q2.
+	  3) Swap the names of q1 and q2 
+	// Swapping of names is done to avoid one more movement of all elements 
+	// from q2 to q1. 
+
+	pop(s)
+	  1) Dequeue an item from q1 and return it.
+
+
+class Stack {
+public:
+    queue<int> q1;
+    queue<int> q2;
+    // Push element x onto stack.
+    void push(int x) {
+        if(q2.empty())
+        {
+            q2.push(x);
+            while(!q1.empty())
+            {
+                q2.push(q1.front());
+                q1.pop();
+            }
+        }
+        else
+        {
+            q1.push(x);
+            while(!q2.empty())
+            {
+                q1.push(q2.front());
+                q2.pop();
+            }
+        }  
+    }
+
+    // Removes the element on top of the stack.
+    void pop() {
+        if(q2.empty())
+        {
+            q1.pop();
+        }
+        
+        else
+        {
+            q2.pop();
+        }        
+    }
+
+    // Get the top element.
+    int top() {
+        if(q2.empty())
+        {
+            return q1.front();
+        }
+        
+        else
+        {
+            return q2.front();
+        }
+    }
+
+    // Return whether the stack is empty.
+    bool empty() {
+        return (q1.empty() && q2.empty());
+    }
+};
